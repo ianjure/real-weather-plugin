@@ -137,7 +137,7 @@
       parent.postMessage({pluginMessage: {city, cardVariant, weathertemp, weatherdata, country}}, '*')
     }
 
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=814db86ef343e43d2f8d27eafccefff1`)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=[API_KEY_WEATHER]`)
     .then(response => response.json())
     .then(
       displayData)
