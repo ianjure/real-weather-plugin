@@ -1,0 +1,146 @@
+<style>
+  .inputField {
+    border: 3px solid #000;
+    border-radius: 16px;
+    height: 40px;
+    line-height: normal;
+    color: #282828;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    user-select: auto;
+    font-size: 16px;
+    padding: 0 6px;
+    padding-left: 12px;
+  }
+                            
+  .submit {
+    appearance: button;
+    background-color: #1899D6;
+    border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: din-round,sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    line-height: 10px;
+    margin: 0;
+    margin-bottom: -50px;
+    outline: none;
+    overflow: visible;
+    padding: 13px 16px;
+    text-align: center;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    transform: translateZ(0);
+    transition: filter .2s;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  .submit:after {
+    background-clip: padding-box;
+    background-color: #1CB0F6;
+    border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    bottom: -4px;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+  }
+
+  .submit:main,
+  .submit:focus {
+    user-select: auto;
+  }
+
+  .submit:hover:not(:disabled) {
+    filter: brightness(1.1);
+    -webkit-filter: brightness(1.1);
+  }
+
+  .submit:disabled {
+    cursor: auto;
+  }
+
+  .submit:active {
+    border-width: 4px 0 0;
+    background: none;
+  }
+
+  .radioLabel {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+  }
+
+  h1 {
+    text-align: center;
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+  }
+
+  body {
+    padding: 2em;
+  }
+  
+  div {
+    margin: 1em;
+  }
+</style>
+
+<h1>RealWeather</h1>
+
+<div class="cityInput">
+  <input class="inputField" type="text" placeholder="Enter City Name" id="city">
+</div>
+
+<div class="radio">
+  <label class="radioLabel">
+    <input class="radioButton" id="radioButton1" type="radio" name="variantGroup" value="1" checked>Classic
+  </label>
+
+  <label class="radioLabel">
+    <input class="radioButton" id="radioButton2" type="radio" name="variantGroup" value="2">Light
+  </label>
+
+  <label class="radioLabel">
+    <input class="radioButton" id="radioButton3" type="radio" name="variantGroup" value="3">Dark
+  </label>
+</div>
+
+<div>
+  <button class="submit" id="submit">Find</button>
+</div>
+
+<script>
+  document.getElementById('submit').onclick = () => {
+    const city = document.getElementById('city').value;
+    const cardVariant = document.querySelector('input[name="variantGroup"]:checked').value;
+    let error = true;
+
+    const displayData=(weather)=>{
+      const weathertemp = weather.main.temp;
+      const weatherdata = weather.weather[0].description;
+      const country = weather.sys.country;
+      parent.postMessage({pluginMessage: {city, cardVariant, weathertemp, weatherdata, country}}, '*')
+    }
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=814db86ef343e43d2f8d27eafccefff1`)
+    .then(response => response.json())
+    .then(
+      displayData)
+    .catch(err => parent.postMessage({pluginMessage: {error}}, '*'));
+  }
+</script>
